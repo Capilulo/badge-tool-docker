@@ -28,7 +28,8 @@ const page = await context.newPage();
   try {
     for (let pageNum = 1; pageNum <= 6 && !done; pageNum++) {
       const suffix = pageNum > 1 ? `.${pageNum}` : '';
-      const url = inputUrl + suffix + '?q=number.50';
+     const separator = inputUrl.includes('?') ? '&' : '?';
+      const url = `${inputUrl}${suffix}${separator}q=number.50`;
       logs.push(`📄 Página ${pageNum}: ${url}`);
 
       await page.goto(url, { waitUntil: 'domcontentloaded' });
