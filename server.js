@@ -16,22 +16,26 @@ app.get('/count-badges', async (req, res) => {
   }
 
   const browser = await chromium.launch({ headless: true });
-const context = await browser.newContext({
-  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
-});
-const page = await context.newPage();
+  const context = await browser.newContext({
+    userAgent:
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+  });
+  const page = await context.newPage();
 
-  let platinum = 0, gold = 0, plata = 0;
+  let platinum = 0,
+    gold = 0,
+    plata = 0;
   let done = false;
   let logs = [`🔍 URL base: ${inputUrl}`];
 
   try {
     for (let pageNum = 1; pageNum <= 6 && !done; pageNum++) {
       const suffix = pageNum > 1 ? `.${pageNum}` : '';
-     const separator = inputUrl.includes('?') ? '&' : '?';
-      const url = `${inputUrl}${suffix}${separator}q=number.50`;
-      logs.push(`📄 Página ${pageNum}: ${url}`);
+      const url = inputUrl.includes('?')
+        ? inputUrl.replace('?', `${suffix}?`) + '&q=number.50'
+        : inputUrl + suffix + '?q=number.50';
 
+      logs.push(`📄 Página ${pageNum}: ${url}`);
       await page.goto(url, { waitUntil: 'domcontentloaded' });
       await page.waitForSelector('div.d3-ad-tile', { timeout: 10000 });
 
@@ -57,11 +61,12 @@ const page = await context.newPage();
         logs.push(`✅ Badge: ${title}`);
       }
     }
-} catch (err) {
-  console.error('❌ Error interno en /count-badges:', err);
-  logs.push(`❌ Error: ${err.message}`);
-  return res.status(500).json({ error: err.message, logs });
-}
+  } catch (err) {
+    console.error('❌ Error interno en /count-badges:', err);
+    logs.push(`❌ Error: ${err.message}`);
+    await browser.close();
+    return res.status(500).json({ error: err.message, logs });
+  }
 
   await browser.close();
 
