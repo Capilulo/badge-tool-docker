@@ -1,8 +1,12 @@
-FROM mcr.microsoft.com/playwright:v1.41.2
+FROM mcr.microsoft.com/playwright:v1.41.2-jammy
 
 WORKDIR /app
-COPY . .
+
+COPY package.json ./
+COPY server.js ./
 
 RUN npm install
 
-CMD ["npm", "start"]
+EXPOSE 10000
+
+CMD ["node", "server.js"]
