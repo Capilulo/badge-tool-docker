@@ -53,9 +53,11 @@ app.get('/count-badges', async (req, res) => {
         logs.push(`✅ Badge: ${title}`);
       }
     }
-  } catch (err) {
-    logs.push(`❌ Error: ${err.message}`);
-  }
+} catch (err) {
+  console.error('❌ Error interno en /count-badges:', err);
+  logs.push(`❌ Error: ${err.message}`);
+  return res.status(500).json({ error: err.message, logs });
+}
 
   await browser.close();
 
