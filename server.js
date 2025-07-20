@@ -16,7 +16,7 @@ async function safeGoto(page, url, logs) {
       logs.push(`🌐 Intento ${attempt}: ${url}`);
       await page.goto(url, {
         waitUntil: 'load',       // 🔁 CAMBIO importante: ahora espera al evento 'load'
-        timeout: 120000          // 🔁 CAMBIO: timeout ampliado a 2 minutos
+        timeout: 300000          // 🔁 CAMBIO: timeout ampliado a 5 minutos
       });
       return;
     } catch (err) {
