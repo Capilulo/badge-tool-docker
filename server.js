@@ -35,8 +35,14 @@ app.get('/count-badges', async (req, res) => {
         ? inputUrl.replace('?', `${suffix}?`) + '&q=number.50'
         : inputUrl + suffix + '?q=number.50';
 
-      logs.push(`📄 Página ${pageNum}: ${url}`);
-      await page.goto(url, { timeout: 60000, waitUntil: 'load' });
+    logs.push(`📄 Página ${pageNum}: ${url}`);
+try {
+  logs.push(`⏳ Cargando: ${url}`);
+  await page.goto(url, { timeout: 90000, waitUntil: 'networkidle' });
+} catch (err) {
+  logs.push(`❌ Error page.goto: ${err.message}`);
+  return res.status(500).json({ error: err.message, logs });
+}
       await page.waitForSelector('div.d3-ad-tile', { timeout: 10000 });
 
       await page.evaluate(() => window.scrollBy(0, window.innerHeight));
