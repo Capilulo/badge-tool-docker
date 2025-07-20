@@ -36,7 +36,7 @@ app.get('/count-badges', async (req, res) => {
         : inputUrl + suffix + '?q=number.50';
 
       logs.push(`📄 Página ${pageNum}: ${url}`);
-      await page.goto(url, { waitUntil: 'domcontentloaded' });
+      await page.goto(url, { timeout: 60000, waitUntil: 'load' });
       await page.waitForSelector('div.d3-ad-tile', { timeout: 10000 });
 
       await page.evaluate(() => window.scrollBy(0, window.innerHeight));
