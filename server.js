@@ -53,7 +53,7 @@ app.get('/count-badges', async (req, res) => {
       // ✅ USO de la nueva función con retry + timeout largo
       await safeGoto(page, url, logs);
 
-      await page.waitForSelector('div.d3-ad-tile', { timeout: 20000 });
+      await page.waitForSelector('div.d3-ad-tile', { timeout: 60000 });
       await page.evaluate(() => window.scrollBy(0, window.innerHeight));
       await page.waitForTimeout(1000);
 
